@@ -23,6 +23,7 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
+
     @Value("${github.client.id}")
     private String clientId;
 
@@ -58,9 +59,11 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             userMapper.insertUser(user);
             response.addCookie(new Cookie("token",token));
 //            request.getSession().setAttribute("user",githubUser);
+
             return "redirect:/";
         }else {
             //登录失败 返回首页

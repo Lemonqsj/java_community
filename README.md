@@ -17,3 +17,16 @@
     1. 导航栏的位置错位： 由于将js的引入错误导致，少了一个/，位置全部乱了
     
       <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+##脚本
+   
+   ```sql脚本
+    create table USER(
+          ID           INT auto_increment,
+          ACCOUNT_ID   VARCHAR(100),
+          NAME         VARCHAR(50),
+          TOKEN        VARCHAR(36),
+          GMT_CREATE   BIGINT,
+          GMT_MODIFIED BIGINT,
+          constraint USER_PK
+              primary key (ID)
+      );```
