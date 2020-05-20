@@ -1,30 +1,26 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>lemon community</title>
+    <title th:text="${selectionName}"></title>
     <meta charset="UTF-8"></meta>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <!--    <link rel="stylesheet" href="css/bootstrap.min.css">-->
-    <!--    <link rel="stylesheet" href="css/bootstrap-theme.min.css">-->
 
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/main.css">
 
-    <script src="js/jquery-3.5.1.min.js" type="application/javascript"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
-
-    <!--    <script src="js/bootstrap.min.js" type="application/javascript"></script>-->
+    <script src="/js/jquery-3.5.1.min.js" type="application/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 
 <body>
 <div th:insert="~{navation :: nav}"></div>
 
 
-<div class="container-fluid main">
+<div class="container-fluid main profile">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span>发起</h2>
+            <h2><span th:text="${selectionName}"></span></h2>
             <hr>
 
             <div class="media" th:each="question : ${questionsList.getQuestionDtos()}">
@@ -35,9 +31,7 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4  class="media-heading" >
-                        <a th:href="@{'question/'+${question.id}}" th:text="${question.title}"></a>
-                    </h4>
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
                     <span th:text="${question.description}"></span><br>
 
                     <span class="text-desc">
@@ -45,8 +39,7 @@
                         <span th:text="${question.viewCount}"></span>人关注 •
                         <span th:text="${question.commentCount}"></span>个回复 •
                         <span th:text="${question.likeCount}"></span>18 次浏览 •
-                        <span th:text="${#dates.format(question.gmtModified)}"></span>前
-                    </span>
+                        <span th:text="${#dates.format(question.gmtModified)}"></span>前</span>
                 </div>
 
             </div>
@@ -54,26 +47,27 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li th:if="${questionsList.showFirstPage}">
-                        <a href="/?page=1" aria-label="Previous">
+                        <a th:href="@{'/profile/'+${selection}(page=${1})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;&lt;</span>
                         </a>
                     </li>
                     <li th:if="${questionsList.showPre}">
-                        <a th:href="@{/(page=${questionsList.getCurrentPage()-1})}" aria-label="Previous">
+                        <a th:href="@{'/profile/'+${selection}(page=${questionsList.getCurrentPage()-1})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
 
                     <li th:class="${page==questionsList.getCurrentPage()}? 'active' : ''"
-                        th:each="page : ${questionsList.getPages()}"><a th:href="@{/(page=${page})}"
-                                                                        th:text="${page}"></a></li>
+                        th:each="page : ${questionsList.getPages()}">
+                        <a th:href="@{'/profile/'+${selection}(page=${page})}"
+                           th:text="${page}"></a></li>
                     <li th:if="${questionsList.showNext}">
-                        <a th:href="@{/(page=${questionsList.totalPage})}" aria-label="Next">
+                        <a th:href="@{'/profile/'+${selection}(page=${questionsList.getCurrentPage()+1})}" aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
                     <li th:if="${questionsList.showEndPage}">
-                        <a th:href="@{/(page=${questionsList.getCurrentPage()+1})}" aria-label="Next">
+                        <a th:href="@{'/profile/'+${selection}(page=${questionsList.totalPage})}" aria-label="Next">
                             <span aria-hidden="true">&gt;&gt;</span>
                         </a>
                     </li>
@@ -81,7 +75,13 @@
             </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            <h2>最新</h2>
+            <div class="list-group selection">
+                <a href="/profile/questions" th:class="${selection=='questions'}? 'active list-group-item ' : 'list-group-item '">我的问题</a>
+                <a href="/profile/replies" th:class="${selection=='replies'}? 'active list-group-item ' : 'list-group-item '">
+                    我的回复
+                    <span class="badge">14</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
