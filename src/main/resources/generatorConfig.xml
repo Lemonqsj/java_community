@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+<!--    classPathEntry标签是被用来加载MBG运行的路径依赖，比如jdbc驱动依赖，这个选项也不是必须的-->
+<!--    <classPathEntry location="/Program Files/IBM/SQLLIB/java/db2java.zip" />-->
+
+<!--    context标签通常被用作指定生成对象的环境，比如指定连接驱动，用户名 密码等；. Multiple <context> elements也可以使用，-->
+<!--    可以指定多个数据库就需要用多个context标签来使用；必须要属性就一个id，通常来标示是哪一个数据库，用来标示一些错误信息等-->
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+        <jdbcConnection driverClass="org.h2.Driver"
+                        connectionURL="jdbc:h2:~/community"
+                        userId="lemon"
+                        password="123">
+        </jdbcConnection>
+
+<!--        javaTypeResolver 标签通常是定义java type resolver的也就是java 类解析器的，这个是用作根据数据库的列信息来计算java类的，-->
+<!--        默认的java resolver通常会通过将integer替换long float等会使得解析JDBC DECIMAL and NUMERIC types easier-->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+
+<!--        javaModelGenerator标签是用来定义java model生成的 这个将会根据数据库表生成java model，这个表生成于主键查询有关，且也可以通过生成的模版查询到的类-->
+<!--        enableSubPackages属性可以设置是否需要根据不同的表以及路径生成在不同的包中-->
+<!--        trimStrings 这个是设置去除空格的-->
+        <javaModelGenerator targetPackage="com.lemon.spring_first.model" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+<!--        sqlMapGenerator 标签通常备用做生成mapper类的-->
+        <sqlMapGenerator targetPackage="mapper"  targetProject="src/main/resources">
+<!--            <property name="enableSubPackages" value="true" />-->
+        </sqlMapGenerator>
+
+<!--        javaClientGenerator 是java client生成器  主要用作构建java接口和model -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.lemon.spring_first.mapper"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+<!--        table就是设置表了,schema就是设置模式的-->
+        <table  tableName="user" domainObjectName="User" >
+<!--            <property name="useActualColumnNames" value="true"/>-->
+<!--            <generatedKey column="ID" sqlStatement="DB2" identity="true" />-->
+<!--            <columnOverride column="DATE_FIELD" property="startDate" />-->
+<!--            <ignoreColumn column="FRED" />-->
+<!--            <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />-->
+        </table>
+
+        <table  tableName="question" domainObjectName="Question" >
+            <!--            <property name="useActualColumnNames" value="true"/>-->
+            <!--            <generatedKey column="ID" sqlStatement="DB2" identity="true" />-->
+            <!--            <columnOverride column="DATE_FIELD" property="startDate" />-->
+            <!--            <ignoreColumn column="FRED" />-->
+            <!--            <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />-->
+        </table>
+
+    </context>
+</generatorConfiguration>

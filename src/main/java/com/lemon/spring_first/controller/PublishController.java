@@ -2,7 +2,7 @@ package com.lemon.spring_first.controller;
 
 import com.lemon.spring_first.dto.QuestionDto;
 import com.lemon.spring_first.mapper.QuestionMapper;
-import com.lemon.spring_first.model.QuestionModel;
+import com.lemon.spring_first.model.Question;
 import com.lemon.spring_first.model.User;
 import com.lemon.spring_first.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,7 +84,7 @@ public class PublishController {
             return "publish";
         }
 
-        QuestionModel question = new QuestionModel();
+        Question question = new Question();
         question.setTitle(title);
         question.setCreator(user.getId());
         question.setDescription(description);

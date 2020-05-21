@@ -29,4 +29,7 @@
           GMT_MODIFIED BIGINT,
           constraint USER_PK
               primary key (ID)
-      );```
+      );
+
+     mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+    ```

@@ -2,7 +2,6 @@ package com.lemon.spring_first.controller;
 
 import com.lemon.spring_first.dto.QuestionIndexDto;
 import com.lemon.spring_first.mapper.QuestionMapper;
-import com.lemon.spring_first.mapper.UserMapper;
 import com.lemon.spring_first.model.User;
 import com.lemon.spring_first.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class ProfileController {
 
 
-    @Autowired
-    UserMapper userMapper;
 
-    @Autowired
+        @Autowired
     QuestionMapper questionMapper;
 
     @Autowired

@@ -4,8 +4,10 @@ import com.lemon.spring_first.dto.QuestionDto;
 import com.lemon.spring_first.dto.QuestionIndexDto;
 import com.lemon.spring_first.mapper.QuestionMapper;
 import com.lemon.spring_first.mapper.UserMapper;
-import com.lemon.spring_first.model.QuestionModel;
+import com.lemon.spring_first.model.Question;
+import com.lemon.spring_first.model.QuestionExample;
 import com.lemon.spring_first.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,8 @@ public class QuestionService {
     QuestionMapper questionMapper;
     public QuestionIndexDto list(Integer page, Integer size) {
         QuestionIndexDto questionIndexDto = new QuestionIndexDto();
-        Integer totalCount = questionMapper.count();
+        Integer totalCount =(int) questionMapper.countByExample(new QuestionExample());
+//        Integer totalCount = questionMapper.count();
         questionIndexDto.setPageValue(totalCount,page,size);
         Integer totalPage=0;
         if (totalCount % size==0){
@@ -40,14 +43,16 @@ public class QuestionService {
         }
 
         Integer offsize=size*(page-1);
-        List<QuestionModel> questionModels = questionMapper.list(offsize,size);
+//        List<Question> questionModels = questionMapper.list(offsize,size);
+        List<Question> questionModels = questionMapper.selectByExampleWithBLOBsWithRowbounds(new QuestionExample(), new RowBounds(offsize, size));
         List<QuestionDto> questionDtos=new ArrayList<>();
 
 
-        questionModels.forEach(new Consumer<QuestionModel>() {
+        questionModels.forEach(new Consumer<Question>() {
             @Override
-            public void accept(QuestionModel questionModel) {
-                User user=userMapper.findById(questionModel.getCreator());
+            public void accept(Question questionModel) {
+                User user = userMapper.selectByPrimaryKey(questionModel.getCreator());
+//                User user=userMapper.findById(questionModel.getCreator());
                 QuestionDto question = new QuestionDto();
                 BeanUtils.copyProperties(questionModel,question);
                 question.setUser(user);
@@ -61,7 +66,11 @@ public class QuestionService {
     public QuestionIndexDto list(Integer userId, Integer page, Integer size) {
 
         QuestionIndexDto questionIndexDto = new QuestionIndexDto();
-        Integer totalCount = questionMapper.countById(userId);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andIdEqualTo(userId);
+        Integer totalCount = (int)questionMapper.countByExample(example);
+//        Integer totalCount = questionMapper.countById(userId);
         questionIndexDto.setPageValue(totalCount,page,size);
         Integer totalPage=0;
         if (totalCount % size==0){
@@ -78,14 +87,18 @@ public class QuestionService {
         }
 
         Integer offsize=size*(page-1);
-        List<QuestionModel> questionModels = questionMapper.listByUserId(userId,offsize,size);
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.createCriteria().andIdEqualTo(userId);
+        List<Question> questionModels = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(offsize, size));
+//        List<QuestionModel> questionModels = questionMapper.listByUserId(userId,offsize,size);
         List<QuestionDto> questionDtos=new ArrayList<>();
 
 
-        questionModels.forEach(new Consumer<QuestionModel>() {
+        questionModels.forEach(new Consumer<Question>() {
             @Override
-            public void accept(QuestionModel questionModel) {
-                User user=userMapper.findById(questionModel.getCreator());
+            public void accept(Question questionModel) {
+                User user = userMapper.selectByPrimaryKey(questionModel.getCreator());
+//                User user=userMapper.findById(questionModel.getCreator());
                 QuestionDto question = new QuestionDto();
                 BeanUtils.copyProperties(questionModel,question);
                 question.setUser(user);
@@ -98,23 +111,26 @@ public class QuestionService {
     }
 
     public QuestionDto getQuestionDtoById(Integer id) {
-       QuestionModel questionModel= questionMapper.selectQuestionById(id);
-        User user=userMapper.findById(questionModel.getCreator());
+        Question questionModel = questionMapper.selectByPrimaryKey(id);
+//        QuestionModel questionModel= questionMapper.selectQuestionById(id);
+        User user = userMapper.selectByPrimaryKey(questionModel.getCreator());
         QuestionDto question = new QuestionDto();
         BeanUtils.copyProperties(questionModel,question);
         question.setUser(user);
         return question;
     }
 
-    public void createOrUpdateQuestion(QuestionModel question) {
+    public void createOrUpdateQuestion(Question question) {
 
         if (question.getId()!=null){
             //更新数据
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.updateQuestion(question);
+            questionMapper.updateByPrimaryKey(question);
+//            questionMapper.updateQuestion(question);
         }else {
             //插入问题
-            questionMapper.createQuestion(question);
+            questionMapper.insert(question);
+//            questionMapper.createQuestion(question);
         }
     }
 }
