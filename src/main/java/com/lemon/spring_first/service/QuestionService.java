@@ -2,6 +2,8 @@ package com.lemon.spring_first.service;
 
 import com.lemon.spring_first.dto.QuestionDto;
 import com.lemon.spring_first.dto.QuestionIndexDto;
+import com.lemon.spring_first.exception.CustomizeErrorCode;
+import com.lemon.spring_first.exception.CustomizeException;
 import com.lemon.spring_first.mapper.QuestionMapper;
 import com.lemon.spring_first.mapper.UserMapper;
 import com.lemon.spring_first.model.Question;
@@ -112,6 +114,10 @@ public class QuestionService {
 
     public QuestionDto getQuestionDtoById(Integer id) {
         Question questionModel = questionMapper.selectByPrimaryKey(id);
+
+        if (questionModel==null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
 //        QuestionModel questionModel= questionMapper.selectQuestionById(id);
         User user = userMapper.selectByPrimaryKey(questionModel.getCreator());
         QuestionDto question = new QuestionDto();
@@ -125,10 +131,15 @@ public class QuestionService {
         if (question.getId()!=null){
             //更新数据
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.updateByPrimaryKey(question);
+            int updated = questionMapper.updateByPrimaryKey(question);
+            if (updated!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
 //            questionMapper.updateQuestion(question);
         }else {
             //插入问题
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
             questionMapper.insert(question);
 //            questionMapper.createQuestion(question);
         }
